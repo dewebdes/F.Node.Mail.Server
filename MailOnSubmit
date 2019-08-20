@@ -1,0 +1,42 @@
+app.get("/newpage/", function(request, response){
+var tablename = request.query.tablename;
+var fls = request.query.fls;
+var dplc=request.query.dplc;
+var dtm=request.query.dtm;
+var dur=request.query.dur;
+var wuuid=request.query.wuuid;
+var tit=request.query.tit;
+var dpic=request.query.dpic;
+var duser=request.query.duser;
+var dpost=request.query.dpost;
+var dsubj=request.query.dsubj;
+var wgeo=request.query.wgeo;
+var vls=request.query.vls;
+var where=request.query.where;
+   
+ var request2 = require('request');
+ var propertiesObject = { api:"sql",cmd:"insertorupdate",project:'xxx', tablename: tablename, flst: fls, vls: vls, where: where, device: "0"  };
+
+ request2({url:'http://MaximORM/exc.php', qs:propertiesObject}, function(err, response2, body) {
+  if(err) { console.log("**ERROR: "+err); return; }
+
+
+
+exec('echo "'+dur+'" | mail -s "IPOZAL New Page" '+duser+' < /var/www/html/xxxxx/index.html', (err, stdout, stderr) => {
+  if (err) {
+    // node couldn't execute the command
+    return;
+  }
+
+  // the *entire* stdout and stderr (buffered)
+  console.log(`stdout: ${stdout}`);
+  console.log(`stderr: ${stderr}`);
+});
+
+
+  response.send("<h1>Check your MailBox: <u>"+duser+"</u></h1>");
+  console.log("insertorupdate = "+body);
+ });
+
+    
+})
