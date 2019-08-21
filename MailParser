@@ -1,0 +1,64 @@
+var mailsr=new Array();
+var mailsr2=new Array();
+
+const simpleParser = require('mailparser').simpleParser;
+
+var intmchk;
+function funcxrpt(){
+clearInterval(intmchk);
+console.log('hi from xx');
+fs.readdir('/home/yto/Maildir/new', function(err, filenames) {
+    if (err) {
+        onError(err);
+        return;
+    }
+    mailsr=filenames;
+    if(mailsr.length > mailsr2.length){
+        var indx=mailsr2.length;
+        filenames.forEach(function(filename) {
+            if(indx<mailsr.length ){
+                fs.readFile('/home/yto/Maildir/new/'+filename, (err, data) => {
+                  if (err){ //throw err;
+                    }else{
+                        simpleParser(data).then(function(mail_object) {
+                          console.log("From:", mail_object.from.value);
+                          console.log("Subject:", mail_object.subject);
+                          console.log("Text body:", mail_object.text);
+
+
+                        var parsed = mail_object;
+
+
+                        console.log("\n\n\n NEW MAIL ARRIVED - "+indx+" \n "+parsed+" \n\n\n");
+                        console.log("headers – a Map object with lowercase header keys: "+parsed.headers+"\n");
+                        console.log("subject is the subject line (also available from the header mail.headers.get(‘subject’)): "+parsed.subject+"\n");
+                        console.log("from is an address object for the From: header: "+parsed.from+"\n");
+                        console.log("to is an address object for the To: header: "+parsed.header+"\n");
+                        console.log("cc is an address object for the Cc: header: "+parsed.cc+"\n");
+                        console.log("bcc is an address object for the Bcc: header (usually not present): "+parsed.bcc+"\n");
+                        console.log("date is a Date object for the Date: header: "+parsed.date+"\n");
+                        console.log("messageId is the Message-ID value string: "+parsed.messageId+"\n");
+                        console.log("inReplyTo is the In-Reply-To value string: "+parsed.inReplyTo+"\n");
+                        try{
+                        console.log("reply-to is an address object for the Cc: header: "+parsed.reply-to+"\n");
+                        }catch(ex){}
+                        console.log("references is an array of referenced Message-ID values: "+parsed.references+"\n");
+                        console.log("html is the HTML body of the message. If the message included embedded images as cid: urls then these are all replaced with base64 formatted data: URIs: "+parsed.headers+"\n");
+                        console.log("text is the plaintext body of the message: "+parsed.headers+"\n");
+                        console.log("textAsHtml is the plaintext body of the message formatted as HTML: "+parsed.headers+"\n");
+                        console.log("attachments is an array of attachments: "+parsed.headers+"\n");
+                }).catch(function(err) {
+                  console.log('An error occurred:', err.message);
+                });
+
+                    }
+                  });    
+                indx++;
+            }
+        });
+    }
+});
+mailsr2=mailsr;
+intmchk = setInterval(funcxrpt,1000);
+}
+funcxrpt();
